@@ -1,0 +1,232 @@
+1. In English, explain the type `∀α, β . α → β.`
+
+    You are ready for exercise 1.
+
+  For every α and β, we have formal parameter type α and return type β.
+
+2. Read Sections 7.3.2 and Section 7.4.1,
+    starting on pages page 473 and page 474, respectively. 
+    We have seen the symbols ρ, τ, and σ before, but not with exactly 
+    this usage.
+
+    (a) In this new context, what does ρ represent?
+
+
+        ρ is the environment that map a name to a value
+
+        How does it differ from the way we used ρ before?
+
+        The new abstract machine has no location and no store, every time, 
+    evaluating an expression, we create new environment, but for old one,
+    for old varialbe, the environment is not change,  only location update.
+
+    (b) In this new context, what does τ represent?
+
+        τ represent a type, inculde type variable, type construct, constructor
+    application  
+
+
+        How does it differ from the way we used τ in typed μScheme?
+        
+        Types in nano-ML are restricted, a type quantified with ∀ may appear 
+   only at top level, never as an argument to a type constructor. In nano-ML,
+   we build this restriction into the syntax of types. 
+                      
+        
+    (c) In this new context, what does σ represent?
+
+        σ represent a type scheme which stands for a type quantified over a
+    list of type variables α1, α2...αn.  σ ::= ∀α1, α2...αn.τ
+       
+
+        How does it differ from the way we used σ before?
+
+       In old one, σ represent a store which is a function from locations 
+    to value.
+
+
+
+    (d) Say briefly what, in nano-ML, is the difference between τ and σ.
+
+      The τ is a type inculde type variable, type construct, constructor
+    application, however,σ stands for a type quantified over a list of type 
+    variables α1, α2...αn. From σ to τ, we use instantiate and From τ to σ we 
+    use generalize
+
+    You are ready for exercise 2.  And you are preparing for exercise 19.
+
+
+
+ 3. Read the first two pages of Section 7.4.3, which explain
+    "substitutions" and "instances."
+
+    (a) Write a single substitution that replaces type variables
+        α and β with types `sym` and `bool`, respectively.
+
+        θ = (α ↦ sym, β ↦ bool)
+
+    (b) Write a type τ that is an instance of the polymorphic type
+        scheme `∀α . α list → int`.
+
+        τ = int list → int 
+
+
+
+    You have a foundation on which to get ready for exercises 18 and S.
+
+
+
+ 4. Read the first page of Section 7.5.2, which shows the form of
+    a constraint.   Then skip to the first page of Section 7.5.3,
+    which explains how to apply a substitution to a constraint.
+
+    Define substitution `θ = (α₁ ↦ int)` and constraint 
+    
+    > `C = α₁ ~ α₂ /\ α₂ ~ α₃ list /\ α₄ ~ α₃ list list`.
+
+    Now define C' as the result of applying θ to C.
+    
+    (a) Write C':
+
+      `C = int ~ α₂ /\ α₂ ~ α₃ list /\ α₄ ~ α₃ list list
+    
+    (b) Do you think C' has a solution?  Justify your answer.
+
+       No, because if int ~ α₂ is true α₂ should be int and if α₂ ~ α₃ list
+    is true, α₂ should be a list, this is impossible.
+
+    (c) What if new substitution `(α₂ ↦ int)` is applied to C?  Does the
+        resulting constraint have a solution?  Justify your answer.
+
+       No, it will become  `C = int ~ int /\ int ~ α₃ list /\ α₄ ~ α₃ list
+   list int can not be equal to any list
+
+    You are getting ready for exercises 18 and S.
+
+
+
+ 5. Now read all of Section 7.5.3, which explains
+    how to solve constraints.  
+
+    To demonstrate your understanding, reason about solving these four
+    constraints:
+
+    > `C₁ = α ~ int`
+    >
+    > `C₂ = α ~ bool`
+    >
+    > `C₃ = C₁ /\ C₂`
+    >
+    > `C₄ = α₁ ~ α₂ /\ α₂ list ~ α₁`
+
+    (a) Write a substitution `θ₁` that solves constraint `C₁`:
+       
+     θ₁ = (α ↦ int)
+
+
+    (b) Write a substitution `θ₂` that solves constraint `C₂`:
+  
+     θ₂ = (α ↦ bool)
+
+
+    (c) Does the composition `θ₂ ∘ θ₁` solve constraint `C₃ = C₁ /\ C₂`?
+        Justify your answer.
+
+     The (θ₂ ∘ θ₁) C₃ = (θ₂ ∘ θ₁) (C₁ /\ C₂). If it is solved, θ₁C₁ should 
+   be solved,  θ₁ = (α ↦ int), and θ₂(θ₁C₂) should be solved as well. But 
+   θ₁C₂ won't be solved because int can not be equal to bool.
+
+
+    (d) Explain why constraint `C₄` can't be solved:
+ 
+    The reason is that if C₄ want to be solved, α₁ ~ α₂ should be solved and
+    α₂ list ~ α₁ can be solved as well, but this is impossible because α₁ 
+    cannot be α₂ list at the same time be α₂ type
+
+
+    (e) Can constraint `C₃` be solved?  Justify your answer.
+
+    No, it cannot be solved. as we said on part c, α can not be int and bool
+  on the same time.
+
+
+
+    You are ready for excercises 18 and S.
+
+
+ 6. Read the paragraphs that describe the typing rules for `lambda` and
+    for "Milner's Let", which you will find on page 481.  Don't
+    overlook the small paragraph following the `lambda` rule.
+
+    Now look at the `val` definition of `too-poly` in code chunk 481.
+    The right-hand side of the `val` definition is a `lambda`
+    expression with the name `empty-list` playing the role of `x₁`.
+    
+    (a) The rule for `lambda` says that we can pick any type `τ₁` for
+        `empty-list`.  After we've chosen `τ₁`, what is the *type
+        scheme* to which `empty-list` (playing `x₁`) is bound in the
+        extended environment which is used to check $e$?
+        
+        forall.τ₁
+
+
+
+    (b) Given that the rule for `lambda` says that we can pick any
+        type `τ₁` for `empty-list`, why can't we pick a `τ₁` that makes
+        the `lambda` expression type-check?
+
+        For example, if we consider code chunk 481, the first type we pick
+   for empty-list is int list because (cons 1 empty-list), But we cannot 
+   cons #t into empty-list because at this time, empty-list is int list,
+   not bool list.
+
+
+
+    Now look at the definition of `not-too-poly` in code chunk 482.
+    The right-hand side is an example of Milner's `let` with
+    `empty-list` playing the role of $x$, the literal `'()` playing
+    the role of $e'$, and an application of `pair` playing the role
+    of $e$.  Suppose that Γ ⊢ `'()` : β list, where β is a type variable
+    that does not appear anywhere in Γ.  That is to say, the literal
+    `'()` is given the type β list, which is playing the role of τ'.
+
+    (c) What are the free type variables of τ'?
+
+        β is the free type variables of τ'
+
+    (d) What set plays the role of `{ α₁, ..., αₙ }`?
+
+
+        (int bool )   
+
+    (e) What is the *type scheme* to which `empty-list` (playing x) is
+        bound in the extended environment which is used to check $e$?
+       
+        ∀α . α list → a list
+        For (cons 1 empty-list), check the environment, 1 is int, so 
+        int list → int list  
+        For (cons #t empty-list), check the environment, #t is bool, so
+        bool list → bool list       
+
+
+    Look at the VAR rule on page 480 and at the definition of the
+    *instance* relation <: on page 476:
+
+    (f) Given the type scheme of `empty-list` in `not-too-poly`, and
+        given that `empty-list` is used in two different places, what
+        type τ do you choose at each use of the VAR rule?
+
+
+        The first use is int list, second is bool list
+
+    (g) Explain informally why `not-too-poly` type checks.
+
+       The resaon ‘not-too-poly’ type check is because empty-list is 
+    polymorphic, when cons x empty-list, we need to determine what type list 
+    has been formed according to the type of x
+    
+
+    In exercises 19 and T, you are now ready to implement typing rules
+    for syntactic forms that use `generalize`, including the VAL and
+    LET forms.
+

@@ -1,0 +1,14 @@
+
+(* Question 1 *)
+
+(define input1 (x)  
+  (input1 x))
+
+(* Question 2
+
+∀α. α
+
+Yes, in nano-ml, the environment ρ directly maps a name to a value, so a 
+value that could be stored in ρ that is consistent with that σ 
+
+*)
