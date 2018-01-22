@@ -1,0 +1,152 @@
+ 1. Review Section 2.2 on list primitives and S-expression literals,
+    and say what is the value of each of the expressions below.
+    If a run-time error would occur, please explain why.
+
+    ````
+    (car '(a b 1 2))  
+    (cdr '(a b 1 2))  
+    (= 'a 'b)         
+    (= '(a b) '(a b)) 
+    ````
+
+    To write your answers, use S-expression literals.
+    
+    The meaning of car is that if S is the nonempty list(S1,S2...Sn),
+ then (car S) is S1; if S is nil or is not a list, applying car to it
+ is a checked run-time error. So the value of (car '(a b 1 2)) is a.
+    The meaning of cdr is that if S is the nonempty list(S1,S2...Sn),
+ then (cdr S) is (S2.....Sn);if S is nil or is not a list, applying cdr
+ to it is a checked run-time error. If S is the singleton list(S1),
+ (cdr S) is nil. so the value of (cdr '(a b 1 2)) is (b 1 2).
+    The meaning of =:(= S1 S2) return #t if S1 and S2 are both the same 
+ number,both the same symbol,both the same Boolean, or both nil;it returns
+ #f otherwise. Because the symbol a and b are not the same, the value of
+ (= 'a 'b) is #f.
+    And = cannot be used to compare two list, it will produce wrong result.
+ To compare lists, we should use equal?. So Although both  (a b) and (a b) 
+ are the same, the value of (= '(a b) '(a b)) is #f. Although the interpreter
+ doesn't run error, the running result is wrong.   
+ 
+
+ 2. Review the first few pages of section 2.3, through the end of
+    section 2.3.2.  Which of the following is true for every *list*
+    `xs`? Why?
+
+    ````
+    (=      (reverse (reverse xs)) xs)
+    (equal? (reverse (reverse xs)) xs)
+    ````
+
+   (reverse xs) is to reverse every atoms in the xs.(reverse (reverse xs))
+ is to reverse (reverse xs), so the value of (reverse (reverse xs)) should 
+ be xs. the value of (reverse (reverse xs)) is equal to xs. But = cannot be 
+ used to evaluate two lists, so it will create #f. In order to evaluate two
+ lists, we need to use the fuction equals? which use recursive way to seperate
+ lists one by one and compare each atom whether atom. If all atoms in the two
+ lists are equal, it return #t. so the value of (equal? (reverse (reverse xs))
+ xs) is #t.
+
+
+ 3. Read section 2.3.2, then please explain in your own words the difference
+    between `simple-reverse` and `reverse`.
+    
+    The biggest difference between 'simple-reverse' and 'reverse' is time 
+ complexity and space complexity. Within the body of the function 'simple-
+ reverse' exsits another function 'append' and within the body of the function
+ 'append' exsits the function 'simple-reverse'. 'append' takes O(n) time and 
+ space, so 'simple-reverse' will take O(n^2) and space, where n is the length 
+ of the list. However, the 'reverse' function use a technique called the method
+ of accumulating parameters which is to create a parameter ys to accumulate the 
+ eventual result. If we want to reverse the list xs, we just need to make ys is 
+ a empty list. Every time we call the function, we cons the first element to the
+ ys. so we only need n times. So the 'reverse' only takes O(n) time and space.
+     
+    
+ 4. Review the first part of section 2.4, up to 2.4.4, and ~~write~~
+    <span class="new">discover</span> a new algebraic law that applies
+    to some combination of `append` and `length`.  ~~Your law should
+    be~~ <span class="new">Write your law</span> in the style of
+    section 2.4.4.  Like the other list laws in that section, your law
+    must mention a variable `xs`, which must be allowed to be any
+    arbitrary list.
+
+    (length (append (cons x '()) xs)) = (+ 1 (length xs))
+
+ 5. Review section 2.4.5 and demonstrate the proper form for a
+    calculational proof by writing a one-step proof that `(+` $e$ `0)`
+    equals $e$.
+    
+    The the evaluation result of expression e have to be a number, otherwise
+ (+ e 0) will run error. (+ e 0) = {zero is the additive identity} = e.
+
+ 
+ 6. Imagine you are tasked with translating the following C function
+    into $\mu$Scheme:
+
+    ````
+    bool parity(int m) {
+      int half_m = m / 2;
+      int other_half = m - half_m;
+      return half_m == other_half;
+    }      
+    ````
+
+    Review section 2.5, and answer these questions:
+
+      (a) Is it sensible to use `let`?  Why or why not?
+      
+      The answer is no. In a let expression, (let ((x1 e1) (x2 e2)...
+ (xn en)) e), all of ei's are evaluated before any of the xi's are bound.
+ For the function parity, if we use let, we will find the variable half_m
+ haven't been defined when machine begins to evaluate (m - half_m). It 
+ will run error.
+      
+      (b) Is it sensible to use `let*`?  Why or why not?
+  
+      The answer is yes. In a let* expression, (let* ((x1 e1) (x2 e2)...
+ (xn en)) e), it first evaluates e1, then extends the environment by 
+ binding the result to x1. Then it evaluates e2 in the extended environment,
+ and so on. For the parity function, it first evaluates m/2 and assign its 
+ value to other_half which will used when evaluating (m - half_m). so it is
+ very sensible to use let*.
+
+      (c) Is it sensible to use `letrec`?  Why or why not?
+
+      The answer is no. In letrec expression, all of the xi's can be used in
+ all ei's, regardless of order. So it usutally is used in the recursion. For
+ the parity function, there is no any recursion step in its body. So we don't
+ need to write complcated program by lectrec.
+ 
+ 7. The `cons` cell is used for more than just lists---it's the basic
+    element of every $\mu$Scheme data structure. Almost like the
+    assembly language of functional programming.  What a `cons` cell
+    means depends on how it is used and what is the programmer's
+    intent.
+
+    Review section 2.6, especially the definitions of *SEXP* and
+    *LIST*$(\cdots)$, and answer these questions:
+
+    (a) Is the value `(cons 3 4)` a member of *SEXP*?  Why or why not?
+     
+    Yes, it is. The reason is below: 
+    The general S-expression is an atom or a pair of S-expression. SEXP =
+  ATOM U { (cons v1 v2) | v1 ∈ SEXP v2 ∈ SEXP)}. ATOM = BOOL U NUM U SYM 
+  U {'()}. Because both 3 and 4 are numbers which belong to ATOM, 3 ∈
+  SEXP and 4 ∈ SEXP. Based on the definition of SEXP, if 3 ∈ SEXP and 4
+  ∈ SEXP, we have (cons 3 4) ∈ SEXP.
+     
+
+    (b) Given that 3 and 4 are members of set *NUM*, is the value
+       `(cons 3 4)` a member of set *LIST(NUM)*?  Why or why not?
+    
+    Yes, it is. The reason is below:
+    The set of LIST(A) is the smallest set satisfying the equation. LIST(A)
+  = {'()} U { (cons a as) | a ∈ A  as ∈ LIST(A)}. We know '() ∈ LIST(NUM)
+  and we know 4 is number, which belong to NUM, so 4 ∈ NUM and '() ∈ 
+  LIST(NUM) can infer that (cons 4 '()) ∈ LIST(NUM) based on LIST(A) equation. 
+    Next step, we know 3 ∈ NUM and 4 ∈ LIST(NUM), so we can infer (cons 3 4)
+  ∈ LIST(NUM) based on LIST(A) equation.
+
+
+    Your answers should appeal to the numbered equations or named
+    proof rules at the beginning of section 2.6.
