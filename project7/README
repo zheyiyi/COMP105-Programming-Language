@@ -1,0 +1,7 @@
+
+
+(b) empty? FORALL (["'a"], FUNTY ([listtype tyvarA], booltype) 
+    get-first FORALL (["'a"], FUNTY ([listtype tyvarA],tyvarA)
+    get-rest FORALL (["'a"], FUNTY ([listtype tyvarA],listtype tyvarA))
+
+collaborator: Sambit Pradhan 

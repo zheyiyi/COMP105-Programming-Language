@@ -1,0 +1,214 @@
+
+ 1. Read Section 6.3, which describes how Typed Impcore is extended
+    with arrays.  Examine code chunk 403, which shows the cases that
+    have to be added to the type checker.  For each case, name the
+    corresponding type rule, and explain the rule in informal English:
+
+      * The rule for case `| ty (AAT (a, i)) = ...` is:
+
+        Your explanation of the rule:
+        This is elimination rule. If a has a type tau in the
+    enviroment Γξ,ΓΦ,Γρ and i has a type of int in the enviroment Γξ,
+    ΓΦ,Γρ , then AAT (a,i) has a type tau in the enviroment Γξ,ΓΦ,Γρ. 
+
+
+      * The rule for case `| ty (APUT (a, i, e)) = ...` is:
+
+        Your explanation of the rule:
+        This is elimination rule. If a has a type ARRAY(τ)
+    in the enviroment Γξ,ΓΦ,Γρ and i has a type of int in the enviroment
+    Γξ,ΓΦ,Γρ and e has a type of tau in the environment Γξ,ΓΦ,Γρ,
+    then APUT (a,i,e) has a type tau.
+
+
+      * The rule for case `| ty (AMAKE (len, init)) = ...` is:
+
+        Your explanation of the rule:
+        This is an introduction rule. If len has a type of int in the
+    environment Γξ,ΓΦ,Γρ and init has a type of tau in the environment
+    Γξ,ΓΦ,Γρ, then AMAKE (len, init) has a type of ARRAY tau. 
+
+
+      * The rule for case `| ty (ASIZE a) = ...` is:
+
+        Your explanation of the rule:
+       This is elimination rule. If a is a type of ARRAY(tau) in the
+    environment Γξ,ΓΦ,Γρ, then ASIZE a has a type of int. 
+
+
+
+    You are now ready for exercise 2 in the pair problems.
+
+ 2. Exercise 8 asks you to design new syntax and type rules for lists.
+    In μScheme, we operate on lists by calling polymorphic functions.
+    But in a monomorphic language, you must design *new syntax* for
+    each list operation.
+
+    (a) In the initial basis of μScheme, what four functions on lists
+        would be sufficient to implement all the others?
+
+
+     car， cons, cdr, null？
+
+
+    Exercise 8 asks you to label each of your rules as
+    a formation rule, an introduction rule, or an elimination rule.
+    Read the sidebar on "Formation, introduction, and elimination" on
+    page 404.
+
+    (b) Suppose that for each of the functions in part (a), you design
+        a new syntactic form of expression.  For each function, give
+        its name, and say whether you expect the corresponding
+        syntactic form to be an introduction form or an elimination
+        form.  (An introduction form creates new data, and an
+        elimination form interrogates or "takes apart" old data.)
+
+        i. car  elimination form
+
+
+        ii. cdr elimination form
+
+
+        iii. cons introduction form
+
+
+        iv. null? elimination from
+
+
+
+    (c) How many formation rules will you need, and why?
+       
+        1, the formation rules is is sued  to use new type constructor to 
+    make new types, so one is enough to create.
+
+
+
+    (d) You will need at least one rule for each of the syntactic
+        forms in part (b), and you will need whatever formation rules
+        you have listed in part (c).  Do you expect to need any other
+        rules? If so, why?
+
+        no, formation rules is to use new type constructor to make new
+    types, intorduction rules is to create new values that are describle
+    by the new type constructor, elimination rules is to use the values 
+    that are described by the new type constructor. These three rules 
+    included everything we need so there is no reason to make new rule.
+
+    
+    You are now ready for Exercise 8.
+
+
+
+ 3. Read Section 6.6.3 on quantified types in Typed μScheme.
+
+    (a) Variable `syms` holds a list of symbols.  What expression do
+        you write to compute its length?
+
+        ((@ length sym) syms) 
+
+
+    (b) You are given a function `larger?` of type `(int -> bool)`.
+        Using the predefined function `o`, what code do you write to
+        compose `larger?` with `not`?
+
+        (val o (larger (not x))
+
+
+    (c) In testing, we sometimes use a three-argument function `third`
+        that ignores its first two arguments and returns its third
+        argument.  Such a function has type
+
+            (forall ('a 'b 'c) ('a 'b 'c -> 'c))
+
+        There is only one sensible function that has this type.
+        Using a `val` definition, define function `third` in Typed μScheme.
+      
+      
+        (val third (type-lambda ['a 'b 'c] 
+                    (lambda ([x : 'a] [y : 'b] [z : 'c])
+                      z)))
+
+
+
+
+    You are ready for exercise TD.
+
+
+ 4. Read about type equivalence on pages 430 and 431.
+
+    You are given ML values `tau1` and `tau2`, which represent the
+    respective Typed μScheme types `(forall ['a] 'a)` and `(forall ['b] 'b)`.
+    These types are equivalent, but if you code `tau1 = tau2`, you'll
+    get `false`.  In your type checker, what code do you write to
+    determine if `tau1` and `tau2` are equivalent?
+
+    compare tau1 and tau2, we need to use eqtype,
+    eqType (tau1, tau2)
+
+
+    You will soon be ready for Exercise 23, but
+    you first need to complete the next comprehension question.
+
+
+
+ 5. Read Section 6.6.5 on typing rules for expressions in Typed μScheme.
+    For each of the expressions below, say if it is well typed, and if
+    so what its type is.  If the expression is not well typed, say
+    what typing rule fails and why.
+
+        ; (a)
+        (if #t 1 #f)
+        IF type rule fail,  because e2 and e3 should be the same type
+  
+        ; (b)         
+        (let ([x 1]
+              [y 2])
+           (+ x y))
+        yes, this is (int -> int).
+
+        ; (c)
+        (lambda ([x : int]) x)
+        Yes, this is (int -> int)
+        ; (d)
+        (lambda ([x : 'a]) x)
+        no, lambda rule fail, because unknown type variable 'a
+
+        ; (e)
+        (type-lambda ['a] (lambda ([x : 'a]) x))
+        Yes, Type-lambda rule, (forall ('a) ('a -> 'a))  
+    You are now ready for Exercise 23.
+
+
+ 6. Exercise 24 on page 458 calls for you to add a
+    primitive queue type to Typed μScheme. Read it.  Then read
+    "Primitive type constructors of Typed uScheme" in Section 6.6.9.
+
+    (a) Which existing primitive type most resembles a queue type, and why?
+
+        cons looke like put in the queue, cons add element into list,
+    put add element into pair
+
+    (b) When you add a primitive type constructor for queues, what
+        chunk of the source code do you intend to add it to?
+        (Give the page number, and if applicable, the letter.)
+    page 440
+
+    Read "Primitives of Typed μScheme" in section M.4 of Appendix M on
+    page 1294.
+
+    (c) Which set of primitive functions most resembles the functions
+        you will need to add for queues, and why?
+        
+        null? look like empty? on the queue null? check whether the list
+    is empty and empty? check whether the pair is empty.
+        car look like get-first on the queue, car get the fitst element
+    from the list, queue get the first element form queue. 
+        cdr look like get-rest on the queue, cdr the rest of the list,
+    queue get the rest of pair
+
+    (d) When you add primitives functions that operate on queues, what
+        chunk of the source code do you intend to add it to?
+        (Give the page number, and if applicable, the letter.)
+    page 1295 1295c
+
+    You are ready for Exercise 24.
