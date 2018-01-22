@@ -1,0 +1,70 @@
+1. What is the value of the following Impcore expression? 
+(if (> 3 5) 17 99)
+
+  
+  The answer is 99. The meaning of syntax: if(e1 e2 e3)—evaluate e1;if it is nonzero,evaluate e2 and return the result,
+otherwise evaluate e3 and return the result. Because 3>5 is false, we should evaluate 99.
+
+
+2. Which of the following best describes the syntactic structure of Impcore? 
+(a) An expression can contain a definition 
+(b) A definition can contain an expression 
+(c) Both of the above 
+(d) None of the above 
+
+
+  The answer is b, The syntax of impcore include definition and expression. Acutally an impcore program is a sequence of 
+definition.
+
+
+3. What is the value of the following Impcore expression:
+ (while (> n 0) (begin (set n (- n 1)) 33))
+
+
+  The value of the implore expression is 0. The meaning of while( e1 e2 ) is that evaluate e1;if it is not zero,evaluate e2,the start evaluating the loop again with e1. Continue until e1 evaluates to zero.When e1 evaluates to zero, looping ends and the result of the while loop is zero. so the answer is 0.
+
+
+4. Does this Impcore test pass? Why or why not? 
+(check-expect (+ 1 2 3) 6) 
+ 
+  
+  The Implore test cannot pass. The reason is that the syntax of the phrase (+ 1 2 3) is wrong, only two arguments can be put like this (+ 1 2).
+
+
+5. Does this Impcore test pass? Why or why not? 
+(check-error (+ 1 2 3))
+
+
+   The Implore test pass. The definition of check-error is that if evaluating e triggers an error, the test passes;if not, it fails. the syntax of the phrase (+ 1 2 3) is wrong so evaluating it will produce an error. So the Implore test pass.
+
+
+6.
+(a) What concrete syntax could you write in C for this expression?
+ 
+
+  The answer is 9-(12/3)
+
+
+(b) What concrete syntax could you write in Impcore for this expression?
+ 
+
+  The answer is (- 9 (/ 12 3))
+
+
+(c) How many different concrete C expressions describe the same computation?
+
+  The answer are infinite
+  (1)9-12/3
+  (2)9-(12/3)
+  (3)(9-(12/3))
+  (4)(9)-12/3
+  (5)(9-12/3)
+  (5)((9-12/3))   we can add infinite perenthesis actually.
+  (6)9 12 3 / -   if we use stack function and specific function help, we can put the postfix and prefix format and got the final result 5
+  (7)- 9 / 12 3   if we use stack function and specific function help, we can put the prefix format and got the final result 5
+
+(d) How many different concrete Impcore expressions describe the same computation?
+ 
+
+  The answer is only one. The concrete syntax of impcore is parenthesized-prefix syntax. 
+
