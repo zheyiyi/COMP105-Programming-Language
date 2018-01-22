@@ -1,0 +1,133 @@
+ 1. Read Section 2.12.3 on page 147. 
+    What is the difference between DefineOldGlobal and DefineNewGlobal?
+  
+    When a global variable x is bound to an expression, if the variable 
+ is already bound in ρ, the VAL is equivalent to SET, the environment is 
+ unchanged, but the store is updated. this is called DefineOldGlobal.
+ If x is not already bound to a location, the environment is extended to 
+ bind x to a fresh location l, the expression is evaluated in the new 
+ enviroment, and the result of evaluating the expression is stored in l.
+
+    
+ 2. Look at `mk-insertion-sort` in Section 2.9.2 (page 130).
+
+    (a) Calling `(mk-insertion-sort >)` returns a function. What does
+        the function do?
+
+    The fucntion can sort a list of elements into decreasing order.
+    For example, (7 3 4 5) will become (7 5 4 3)
+
+    (b) Given that the internal function `sort` (defined with `letrec`
+        and `lambda`) takes only the list `xs` as argument, how does it
+        know what order to sort in?
+    sort function contain two part: insert function and sort recursion.
+    insert function, every first element of the list will be compared with
+    others in the list, we assume is >, the first element will check one
+    by one until it find one which is bigger than it, it will have been put
+    ahead of the one bigger than it. sort recursion function guarantee every
+    elements in the list operate insertion function. 
+
+
+
+ 3. Look at the first paragraph of Exercise 21 on page 205. 
+    Each bullet gives one possible rule for creating a formula.  For
+    each bullet, write one example formula that is created using the
+    rule for that bullet---four examples in total.
+
+      * a 
+
+      * (not a)
+
+      * (and a b c)
+
+      * (or a b c)
+
+
+    You are ready to start problems F and T.
+
+
+
+ 4. Set aside an hour to study the conjunctive-normal-form solver in
+    Section 2.10.1, which starts on page 133.  This will help you 
+    a lot in solving Exercise 21.
+
+    (a) Look at code chunk 137b on page 137. In English, describe how
+        `(one-solution f)` produces the answer `((x #t) (y #f))`.
+        Walk through each function call, what the input to the
+        function is, how the input is processed, and what the output
+        of the function call is. 
+    
+    First, (val f '((x y z) ((not x) (not y) (not z)) (x y (not z)))) has 
+    been put into function one-solution, the function call another function
+    find-cnf-true-assignment formula '() (lambda () 'no-solution) (lambda 
+    (cur resume) cur), the first argument is from f, if f is not null, it 
+    comes to call another function called find-disjunction-true-assignment
+    ((car f) cur fail (lambda (cur resume) find-cnf-true-assignment (
+    (cdr f) cur resume succeed))), within the function, we know (car f) is
+    not null, so it call another function find-literal-true-assginment (car 
+    (car f)) which is x, and cur is '(), so it first evluate (if (satisfies? 
+    x '())), from satisfies? function, we call another function find-c, in 
+    this function, if alist which is '() in this case is null, it returns 
+    failure-cont, so we know (if (satisfies? x '())) is false, it will 
+    evaluate (if (binds? x '())) which is false, so it comes to evaluate 
+    (succeed(bind(variable-of x) (satisfying-value x))'())fail), so 
+    variable-of x return x and satisfying-value return #t. so (bind x #t)
+    returns (x #t), so it returns (succeed (x #t) fail). and then it evaluate
+    (find-cnf-true-assignment (cdr f) cur resume succeed). The left formula
+    ((not x) (not y) (not z)) (x y (not z)) will be put into the function,
+    and then it comes to find-disjunction-true-assignment (car f) which is 
+    ((not x) (not y) (not z)), so it is not null, so it will come (find-literal
+    -true-assignment (car f) which is (not x), so (if satisfies? (not x) 
+    (x #t)) has been evaluated. find-x (x (x #t)) will return (lambda (#t)
+    (= #t (satisfying-value (x #t))) whch is (= #t #f) which is #f, so it
+    will comes to (if (binds? (not x) (x #t))), binds will return false,
+    which means fail, it will return to evaluate (find-disjunction-true-
+    assignment (cdr ((not x) (not y) (not z)) )) , which is ((not y) (not z)),
+    and then it evaluate (find-literal-true-assginment (car ((not y) (not z)))
+    , (if (satisfies? (not y) (x #t))) return #f, so evalute (if (binds?
+    (not y) (x #t))) which is #f, so evaluate (succeed (bind (y) (#f)) cur)
+    fail), bind will return ((x #t) (y #f)),then it will again comes to(
+    find-cnf-true-assignment (cdr ((not x) (not y) (not z)) (x y (not z)))
+    ((x #t) (y #f)) resume succeed),will continue to evaluate find-discon
+    junction-true-assignment (x) ((x #t) (y #f)) fail, and then it comes
+    (find-literal-true-assignment with first aurgument x, and then it 
+    evaluate (if (satisfies? x ((x #t) (y #f)))), which is #t, so it 
+    returns (succeed ((x #t) (y #f)) fail), so we got the result 
+    ((x #t) (y #f))
+
+
+
+
+
+
+    (b) Look at code chunk 137d. As you did with 137b, describe how
+        `(one-solution '((x) ((not x))))` produces the answer `no-solution`.  
+      
+      First assume f is  '((x) ((not x)))) which has been put into function 
+    one-solution,the function call another function find-cnf-true-assignment
+    formula '() (lambda () 'no-solution) (lambda (cur resume) cur), the first 
+    argument is from f, if f is not null, it comes to call another function 
+    called find-disjunction-true-assignment (car f) cur fail (lambda (cur 
+    resume) (find-cnf-true-assignment (cdr disjunctions) cur resume succeed))
+    and  within the function, we know (car f) whch is (x) is not null, so it 
+    call another function find-literal-true-assginment x cur (lambda () (find
+    -disjucntion-true-assignment (cdr literal) cur fail succeed) and cur is 
+    '(), so it first evluate (if (satisfies? x '())), from satisfies? function
+    , we call another function find-c, in this function, if alist which is '() 
+    in this case is null, it returns failure-cont, so we know (if (satisfies? 
+    x '())) is false, it will evaluate (if (binds? x '())) which is false, so 
+    it comes to evaluate (succeed (bind(variable-of x) (satisfying-value x))
+    '())fail), so variable-of x return x and satisfying-value return #t. so 
+    (bind x #t) returns (x #t),  so it returns (succeed (x #t) fail). and then
+    it evaluate (find-cnf-true-assignment (cdr f) cur resume succeed). The 
+    left formula ((not x)) will put into the function and then it comes to 
+    find-disjunction-true-assignment (car f) which is (not x), so it is not 
+    null, so it will come (find-literal-true-assignment (not x) which is not, 
+    we evaluate if(satisfies? (not x) (x #t)) which is false so it return 
+    (if binds? (not x) (x #t)) which returns #t, so it returns fail.so it 
+    return find-cnf-true-assginment within (define one-solution) fail is to 
+    (lambda () 'no-solution), so the result is no-solution.
+
+
+
+    You are ready to start exercise 21.
