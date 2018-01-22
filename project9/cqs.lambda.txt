@@ -1,0 +1,146 @@
+1. In this assignment, or in Rojas or Panangaden, read about 
+    Now define, in Standard ML, an algebraic data type `term` that
+    represents the _abstract_ syntax of terms.  Your data type should
+    have one value constructor for a variable, one for a lambda
+    abstraction, and one for an application.
+
+    datatype term = VAR of string
+                  | LAM of string * term
+                  | APP of term * term
+
+
+    You are ready for exercise 5, and you have a foundation for
+    exercises 6 and 8.
+
+
+ 2. First read about Then in[Panangaden]
+    (http://www.cs.tufts.edu/comp/105/readings/prakash.pdf),
+    be sure you have an idea about each of these concepts:
+
+    - Capture-avoiding *substitution* (Definition 1.3)
+    - *Reduction* (Definition 1.5), including the example reduction 
+    - *Redex*, *contractum*, and *normal form* (Definitions 1.7 and 1.8)
+
+    Showing each reduction step, reduce the following term to normal form.
+    At each step, choose a redex and replace the redex with its contractum.
+
+        (\n.(n(\z.T))F)(\f.\x.f x)
+        → (\f.\x.f x)(\z.T)F
+        → (\x.(\z.T)x)F
+        → (\z.T)F
+        → T(z→F)
+    The term contains more than one redex, but no matter which redex
+    you choose at each step, you should reach the normal form after
+    exactly four reductions.
+
+
+    You are preparing to complete exercise 8.  But first, you will
+    need an implementation of substitution.
+
+
+ 3. Read about [capture-avoiding substitutions]
+    Review the algebraic laws from [exercise 6](#substitution) and
+    their side conditions.  (The same laws are presented by [Prakash
+    Panangaden](http://www.cs.tufts.edu/comp/105/readings/prakash.pdf),
+    using different notation, as Definition 1.3.)
+
+    [If you want another example of variable capture, read about
+    syntactic sugar for `&&` in $\mu$Scheme (Ramsey, 
+    Section 2.16.3, which starts on page 180),
+    and read about substitution in Ramsey, Section 2.16.4.]{.new}
+
+
+    The lambda term `\x.\y.x` represents a (Curried) function of two
+    arguments that returns its first argument.  We expect the
+    application `(\x.\y.x)y z` to return `y`.
+
+    (a) Take the redex `(\x.\y.x)y` and reduce it one step, **ignoring
+        the [side conditions that prevent variable capture](#substitution)**.
+        That is, substitute _incorrectly_, without renaming any variables.
+
+        If you substitute incorrectly in this way, what term do you
+        wind up with?
+
+        \y.y
+
+    (b) The final term in part (a) codes for a function.  In informal
+        English, how would you describe that function?
+
+        The function is identity function which take a single input 
+    variable y and substitute it into the expression y.
+
+    (c) Now repeat part (a), but this time, renaming variables as
+       ` needed to avoid capture during substitution.
+
+        After a correct reduction with a correct substitution, what
+        term do you wind up with?
+
+        \w.y
+
+
+    (d) The final term in part (a) codes for a function.  In informal
+        English, how would you describe that function?
+
+        The function is taking a single input variable w and substitute
+    it into the expression y
+
+
+    You are ready for exercise 6 (substitution).
+
+
+
+ 4. Read about redexes in
+    [Wikipedia](https://en.wikipedia.org/wiki/Lambda_calculus#Reduction).
+    If you have read Panangaden, Definition 1.7, be aware that
+    Panangaden mentions only one kind of redex, but you will be
+    implementing two.
+
+    (a) Name the two kinds of redex.
+
+        beta-redex: (λx.M) N = M(x->N) 
+        eta-redex:  λx.M x = M if x is not free in M
+
+
+    (b) For each kind of redex, use 
+    [the concrete syntax defined above](#the-syntax-of-terms), 
+        to show what form all redexes of that kind take.
+        
+        beta-redex: (λx.M) N  
+        eta-redex:  λx.(M x)  if x is not free in M       
+
+    (c) For each kind of redex, use your algebraic data type from the
+        preceding question to write a pattern that matches every redex
+        of that kind.
+
+        beta-redex:app (lam x M) N        
+        eta-redex:lam x (app (M x))
+
+    You are getting ready for exercise 8 (reductions).
+
+
+
+ 5. Here's another question about redexes and
+    [reduction](https://en.wikipedia.org/wiki/Lambda_calculus#Reduction).
+    For each kind of redex, show the general form of the redex from
+    part (b) of the preceding question, and show what syntactic form
+    the redex reduces to (in just a single reduction step).
+
+        beta-redex: (λx.M) N = M(x->N)
+        eta-redex:  λx.(M x) = M if x is not free in M
+
+
+    You are getting ready for exercise 8 (reductions).
+
+
+ 6. Read about normal-order and applicative-order
+    Using [the concrete syntax defined above](#the-syntax-of-terms),
+    write a lambda term that contains exactly two redexes, such that
+    _normal-order_ reduction strategy reduces one redex, and
+    _applicative-order_ reduction strategy reduces the other redex.
+
+    λx.x^2 (λx.(x + 1) 2)
+   = (λx.(x + 1) 2)^2   this is normal-order reduction
+   = 3^2   this is applicative-order reduction
+
+     
+    You are (finally!) ready for exercise 8.

@@ -1,0 +1,42 @@
+// 1. even? given by a Church number, return the return encoding of 
+//true or false, depending on whether the numeral represents a even 
+//number or an odd number.
+       
+
+not = \p.p false true;
+even? = \n.n not true;
+
+
+// 2. div2 given by a church number 2n or 2n + 1, return n  
+
+                                                            
+div2 = \n.snd (n (\p.(pair (succ (snd p)) (fst p))) (pair 0 0)); 
+
+
+// 3. binary given a church number return binary form of church number
+// iszero given a church number return true if church number is 0 else 
+// return false
+
+// flip given a church number return 0 if church number is even, else
+// return 1 
+
+
+5     = succ 4;
+6     = succ 5;
+7     = succ 6;
+8     = succ 7;
+9     = succ 8;
+10    = succ 9;
+
+ 
+iszero = \n.n (\x.false) true;
+flip = \n.snd (n (\p.(pair (snd p) (fst p))) (pair 1 0));
+noreduce binary = 
+  Y(\binary.\m.((iszero m) 0 (+ (flip m) (* 10 (binary (div2 m))))));
+
+
+// 4. nth given by a church number and a list reutrn the nth element of
+// the list 
+
+
+noreduce nth = \n.\p.car (n cdr p);
