@@ -1,0 +1,138 @@
+ 1. Read section 5.1 of [Harper](http://www.cs.cmu.edu/~rwh/isml/book.pdf) 
+    about tuple types and tuple patterns.  Also look at the list
+    examples in sections 9.1 and 9.2 of Harper.
+
+    Now consider the pattern `(x::y::zs, w)`. For each of the following
+    expressions, tell whether the pattern matches the value denoted. If
+    the pattern matches, say what values are bound to the four variables
+    `x`, `y`, `zs`, and `w`. If it does not match, explain why not.
+
+    (a) `([1, 2, 3], ("COMP", 105))`
+    (b) `(("COMP", 105), [1, 2, 3])`
+    (c) `([("COMP", 105)], (1, 2, 3))`
+    (d) `(["COMP", "105"], true)`
+    (e) `([true, false], 2.718281828)`
+
+    Answers here:
+
+    (a) Yes, x is 1, y is 2, z is [3]; w is ("COMP", 105)
+
+    (b) No, The first element is a tuple, this is impossible, because
+    evaluating x::y::zs has been a list. 
+
+    (c) No,The first element of the tuple is alist with only one element,
+    not 2 or more elements 
+
+    (d) Yes, x is "COMP", y is "105", zs is nil, w is true
+
+    (e) Yes, x is true, y is false, z is nil, w is 2.718281828
+
+
+    You are now starting to be ready to use pattern matching.
+
+
+
+ 2. In Standard ML, string literals are what you're used to from
+    C and C++, but character literals are not.  Consult page 21 of
+    [Harper](http://www.cs.cmu.edu/~rwh/isml/book.pdf) or page 13 of
+    Ullman and answer these questions:
+
+    (a) What string literal is used to write the string "hello" of
+        type `string`?
+
+        → "hello"
+
+    (b) What character literal is used to write the capital A
+        character, of type `char`?
+
+        → #"A" 
+
+    (c) What character literal is used to write the newline character,
+        of type `char`?
+
+        → #"\n"
+
+
+    You are now ready to match patterns in the "first vowel" problem (D).
+
+
+ 3. Look at the clausal function definition of `outranks` on page 83
+    of [Harper](http://www.cs.cmu.edu/~rwh/isml/book.pdf).  Using the
+    clausal definition enables us to avoid nested `case` expressions
+    such as we might find in Standard ML or μML, and it enables us to
+    avoid nested `if` expressions such as we might find in μScheme.
+    This particular example also collapses multiple cases by using the
+    "wildcard pattern" `_`.
+
+    A wildcard by itself can match anything, but a wildcard in a
+    clausal definition can match only things that are not matched by
+    preceding clauses.  Answer these questions about the wildcards in
+    `outranks`:
+
+    (a) In the second clause, what three suits can the `_` match?
+
+        → Hearts, Diamonds and Clubs
+
+    (b) In the fifth clause, what suits can the `_` match?
+
+        → Diamonds and Clubs 
+
+    (c) In the eighth and final clause, what suits can the `_` match?
+
+        → Clubs,Spades,Hearts and Diamonds 
+
+
+    You are now ready to match patterns that combine tuples with
+    algebraic data types.
+
+
+ 4. In Ramsey's chapter 5, the `eval` code for applying a function
+    appears in code chunk 357c.  In evaluating `APPLY (f, args)`, if
+    expression `f` does not evaluate to either a primitive function or
+    a closure, the code raises the `RuntimeError` exception.
+
+    (a) Show a piece of μScheme code that would, when evaluated, cause
+        chunk 357c to raise the `RuntimeError` exception.
+
+        (1 2) 
+
+    (b) When exception `RuntimeError` is raised, what happens from the
+        user's point of view?
+        It will cause run-time error, no fuction has been found 
+        Run-time error: 1 evaluates to non-function 1 in (1 2)
+        
+
+    (c) Suppose the line that raises the exception were removed from the
+        interpreter.  If the modified interpreter then tried to
+        evaluate the μScheme code from part (a), what would happen
+        from the user's point of view?
+        Run error because the interpreter break  
+
+    You are now ready for problems G, L, and M.
+
+
+ 5. We discussed "free" variables briefly in class.  You can find a
+    longer discussion and precise definition in section 5.10
+    of Ramsey's book, which starts on page 368. Read the section 
+    and identify the free variables of the following expressions:
+
+     (a) Free variables of `(lambda (x) (lambda (y) (equal? x y)))`
+
+         → equal?
+
+     (b) Free variables of `(lambda (y) (equal? x y))`
+
+         → equal?  x
+
+     (c) Free variables of
+
+             (lambda (s1 s2)
+               (if (or (atom? s1) (atom? s2))
+                 (= s1 s2)
+                 (and (equal? (car s1) (car s2))
+                      (equal? (cdr s1) (cdr s2)))))
+
+         → atom?, equal?, car, cdr  = and or 
+
+    You are now ready to improve the μScheme interpreter in problem 2.
+
